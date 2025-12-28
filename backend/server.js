@@ -17,6 +17,7 @@ import noticeRoutes from './routes/noticeRoutes.js';
 import admissionRoutes from './routes/admissionRoutes.js';
 import pageRoutes from './routes/pageRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
+import sitemapRoutes from './routes/sitemapRoutes.js';
 
 // Connect to database
 connectDB();
@@ -57,6 +58,7 @@ app.use('/api/notices', noticeRoutes);
 app.use('/api/admissions', admissionRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api', sitemapRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -40,6 +40,17 @@ const AdmissionPage = () => {
   };
 
   const nextStep = async () => {
+    // Step 4 Validation (Documents) - Manual check since file inputs aren't registered
+    if (step === 4) {
+      const requiredDocs = ['photo', 'citizenship', 'marksheet'];
+      const missingDocs = requiredDocs.filter(doc => !files[doc]);
+      
+      if (missingDocs.length > 0) {
+        toast.error('Please upload all required documents: Photo, Citizenship, and Marksheet');
+        return;
+      }
+    }
+
     const fieldsToValidate = getFieldsForStep(step);
     const isValid = await trigger(fieldsToValidate);
     if (isValid) {
@@ -58,7 +69,7 @@ const AdmissionPage = () => {
       case 2:
         return ['district', 'municipality', 'ward'];
       case 3:
-        return ['level', 'board', 'institution', 'passedYear'];
+        return ['level', 'board', 'institution', 'passedYear', 'shift'];
       case 4:
         return [];
       case 5:
@@ -376,7 +387,7 @@ const AdmissionPage = () => {
                         <label className="form-label">Passed Year *</label>
                         <input
                           type="number"
-                          {...register('passedYear', { required: 'Passed year is required', min: 2000, max: 2025 })}
+                          {...register('passedYear', { required: 'Passed year is required', min: 1990, max: 2100 })}
                           className={`form-input ${errors.passedYear ? 'border-red-500' : ''}`}
                           placeholder="e.g., 2024"
                         />

@@ -1,5 +1,6 @@
 import Admission from '../models/Admission.js';
 import { deleteFromCloudinary } from '../config/cloudinary.js';
+import sendEmail from '../utils/sendEmail.js';
 
 // @desc    Submit admission form
 // @route   POST /api/admissions
@@ -53,6 +54,31 @@ export const submitAdmission = async (req, res, next) => {
     }
     
     const admission = await Admission.create(req.body);
+
+    // Send confirmation email
+    try {
+      const message = `
+        <h1>Application Received</h1>
+        <p>Dear ${admission.fullName},</p>
+        <p>Thank you for applying to SVCM Campus using our online admission portal.</p>
+        <p>Your application ID is: <strong>${admission._id}</strong></p>
+        <p>We have received your application and it is currently <strong>${admission.status}</strong>.</p>
+        <p>You will be notified once your application is reviewed.</p>
+        <br>
+        <p>Best regards,</p>
+        <p>SVCM Admission Team</p>
+      `;
+
+      await sendEmail({
+        email: admission.email,
+        subject: 'Admission Application Received - SVCM',
+        html: message,
+        message: `Dear ${admission.fullName},\n\nThank you for applying to SVCM Campus. Your application ID is: ${admission._id}.\n\nBest regards,\nSVCM Admission Team`,
+      });
+    } catch (err) {
+      console.error('Email send failed:', err);
+      // We don't want to fail the request if email fails, just log it
+    }
     
     res.status(201).json({
       success: true,
@@ -96,7 +122,6 @@ export const getAdmissions = async (req, res, next) => {
     
     const total = await Admission.countDocuments(query);
     const admissions = await Admission.find(query)
-      .select('-documents')
       .sort({ submittedAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -168,6 +193,46 @@ export const updateAdmissionStatus = async (req, res, next) => {
         success: false,
         message: 'Admission not found',
       });
+    }
+
+    // Send email notification for status change
+    if (status === 'approved' || status === 'rejected') {
+      try {
+        const subject = `Admission Application ${status.charAt(0).toUpperCase() + status.slice(1)} - SVCM`;
+        let message = '';
+        
+        if (status === 'approved') {
+          message = `
+            <h1>Application Approved</h1>
+            <p>Dear ${admission.fullName},</p>
+            <p>Congratulations! Your admission application for SVCM Campus has been <strong>APPROVED</strong>.</p>
+            <p><strong>Remarks:</strong> ${remarks || 'Welcome to SVCM Campus!'}</p>
+            <p>Please visit the college administration for further enrollment procedures.</p>
+            <br>
+            <p>Best regards,</p>
+            <p>SVCM Admission Team</p>
+          `;
+        } else {
+          message = `
+            <h1>Application Update</h1>
+            <p>Dear ${admission.fullName},</p>
+            <p>We regret to inform you that your admission application for SVCM Campus has been <strong>REJECTED</strong>.</p>
+            <p><strong>Reason:</strong> ${remarks || 'Does not meet criteria'}</p>
+            <br>
+            <p>Best regards,</p>
+            <p>SVCM Admission Team</p>
+          `;
+        }
+
+        await sendEmail({
+          email: admission.email,
+          subject,
+          html: message,
+          message: `Dear ${admission.fullName},\n\nYour application status has been updated to: ${status}.\n\nRemarks: ${remarks || 'N/A'}\n\nBest regards,\nSVCM Admission Team`,
+        });
+      } catch (err) {
+        console.error('Status update email failed:', err);
+      }
     }
     
     res.status(200).json({

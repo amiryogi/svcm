@@ -286,7 +286,7 @@ const AdmissionsManagement = () => {
                       url && (
                         <a
                           key={key}
-                          href={url}
+                          href={url.url || url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border hover:bg-gray-50 text-sm"

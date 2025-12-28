@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://svcm.edu.np/api/sitemap.xml
+
+# Host
+Host: https://svcm.edu.np
+
+# Disallow admin paths for robots
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/auth/register
+Disallow: /api/auth/logout

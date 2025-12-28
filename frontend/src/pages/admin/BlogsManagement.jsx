@@ -305,6 +305,7 @@ const BlogsManagement = () => {
                     <option value="academic">Academic</option>
                     <option value="sports">Sports</option>
                     <option value="achievements">Achievements</option>
+                    <option value="general">General</option>
                   </select>
                 </div>
                 <div>

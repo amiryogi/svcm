@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { HiCalendar, HiUser, HiTag, HiArrowRight, HiSearch } from 'react-icons/hi';
 import { blogAPI } from '../services/api';
 import Loader from '../components/common/Loader';
+import SEO from '../components/common/SEO';
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -121,6 +122,11 @@ const BlogPage = () => {
 
   return (
     <div>
+      <SEO 
+        title="News & Blog" 
+        description="Stay updated with the latest news, events, and achievements from SVCM Campus." 
+        url="/blog"
+      />
       {/* Hero Section */}
       <section className="relative py-24 gradient-hero text-white">
         <div className="container-custom text-center">

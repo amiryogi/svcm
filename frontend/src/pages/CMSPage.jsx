@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { pageAPI } from '../services/api';
 import Loader from '../components/common/Loader';
+import SEO from '../components/common/SEO';
 
 const CMSPage = () => {
   const { slug } = useParams();
@@ -37,6 +38,12 @@ const CMSPage = () => {
 
   return (
     <div>
+      <SEO 
+        title={page.title} 
+        description={page.metaDescription || page.content.substring(0, 160)} 
+        image={page.featuredImage}
+        url={`/page/${page.slug}`}
+      />
       {/* Hero Section */}
       <section className="relative py-24 gradient-hero text-white">
         {page.featuredImage && (

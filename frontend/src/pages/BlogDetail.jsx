@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { HiCalendar, HiUser, HiArrowLeft, HiTag } from 'react-icons/hi';
 import { blogAPI } from '../services/api';
 import Loader from '../components/common/Loader';
+import SEO from '../components/common/SEO';
 
 const BlogDetail = () => {
   const { slug } = useParams();
@@ -37,6 +38,13 @@ const BlogDetail = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pb-24">
+      <SEO 
+        title={blog.title} 
+        description={blog.excerpt || blog.content.substring(0, 160)} 
+        image={blog.featuredImage}
+        url={`/blog/${blog.slug}`}
+        type="article"
+      />
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px] overflow-hidden">
         <img
